@@ -5,4 +5,4 @@ To use the code  simply source RODBC-patch.R with
 
 `source("https://github.com/VilmosProkaj/RODBCpatch/raw/master/RODBC-patch.R")`
 
-in the R console. At the end of the run you will be asked if you want to update your RODBC installation. 
+in the R console. `Rtools` is required for the compilation. At the end of the run you will be asked if you want to update your RODBC installation. 
