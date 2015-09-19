@@ -142,7 +142,7 @@ patch.RODBC<-function(file,patch=readLines(file)){
   untar(tarfile = x[1,2],exdir = wd)
   if(inherits(try(system("patch1 -Np1 ",input = patch,intern=T,ignore.stderr = T),
                   silent = T),what = "try-error")){
-    cat("applying poor man's patch")
+    cat("applying poor man's patch\n")
     apply.patch(patch = read.patch(text=patch))
   }
   dcf<-read.dcf("RODBC/DESCRIPTION")
@@ -152,7 +152,7 @@ patch.RODBC<-function(file,patch=readLines(file)){
   write.dcf(dcf,file="RODBC/DESCRIPTION")
   cmd<-paste(file.path(Sys.getenv("R_HOME"),"bin","R"),
              "CMD build RODBC --no-build-vignettes")
-  system(cmd,intern = T,wait = T,show.output.on.console = T)
+  system(cmd,wait = T,show.output.on.console = T)
   tools::write_PACKAGES(".",type="source")
   if(is.installed){
     update.packages(ask = TRUE,
