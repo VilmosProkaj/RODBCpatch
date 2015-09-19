@@ -161,7 +161,7 @@ patch.RODBC<-function(file,patch=readLines(file)){
   }else{
     if(tolower(substr(readline("Install patched RODBC? (y/N) "),1,1))=="y")
       install.packages("RODBC",
-                       contriburl = paste("file://",wd,sep=""),
+                       contriburl = paste("file:",wd,sep=""),
                        type="source")
   }
 
