@@ -132,11 +132,11 @@ patch.RODBC<-function(file,patch=readLines(file)){
   if(is.installed &&
      grepl(dtext,packageDescription("RODBC")$Description)){
     cat("RODBC is already patched")
-    return(NULL)	
-  }  
+    return(NULL)
+  }
   wd.old<-getwd();on.exit(setwd(wd.old))
   wd<-tempfile()
-  dir.create(wd)
+  dir.create(wd);on.exit(unlink(wd,T,T))
   x<-download.packages("RODBC",destdir=wd,type = "source")
   setwd(wd)
   untar(tarfile = x[1,2],exdir = wd)
@@ -148,17 +148,24 @@ patch.RODBC<-function(file,patch=readLines(file)){
   dcf<-read.dcf("RODBC/DESCRIPTION")
   dcf[1,"Version"]<-paste(dcf[1,"Version"],1,sep=".")
   dcf[1,"Date"]<-Sys.Date()
-  dcf[1,"Description"]<-paste(dcf[1,"Description"],)
+  dcf[1,"Description"]<-paste(dcf[1,"Description"],dtext)
   write.dcf(dcf,file="RODBC/DESCRIPTION")
-  system("$R_HOME/bin/R CMD build RODBC")
-  tools::write_PACKAGES(".")
+  cmd<-paste(file.path(Sys.getenv("R_HOME"),"bin","R"),
+             "CMD build RODBC --no-build-vignettes")
+  system(cmd,intern = T,wait = T,show.output.on.console = T)
+  tools::write_PACKAGES(".",type="source")
   if(is.installed){
-    update.packages(contriburl = paste("file://",wd,sep=""))
+    update.packages(ask = TRUE,
+                    contriburl = paste("file:",wd,sep=""),
+                    type="source")
   }else{
     if(tolower(substr(readline("Install patched RODBC? (y/N) "),1,1))=="y")
-      install.packages("RODBC",contriburl = paste("file://",wd,sep=""),type="source")	
+      install.packages("RODBC",
+                       contriburl = paste("file://",wd,sep=""),
+                       type="source")
   }
-  unlink(wd,T,T)
+
+
   ##  tar(tarfile = x[1,2],compression = "gzip",
   ##      files = dir("RODBC",full.names = TRUE, recursive = T))
   ##file.show(file.path(wd,"RODBC","src","RODBC.c"))
