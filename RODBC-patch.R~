@@ -128,9 +128,8 @@ apply.patch<-function(patch,n=1, basedir=getwd()){
 
 patch.RODBC<-function(file,patch=readLines(file)){
   dtext<-"Modified for Rstudio."
-  is.installed<- "RODBC" %in% rownames(installed.packages())
-  if(is.installed &&
-     grepl(dtext,packageDescription("RODBC")$Description)){
+  if(("RODBC" %in% rownames(installed.packages())) &&
+      grepl(dtext,packageDescription("RODBC")$Description)){
     cat("RODBC is already patched")
     return(NULL)	
   }  
@@ -152,12 +151,7 @@ patch.RODBC<-function(file,patch=readLines(file)){
   write.dcf(dcf,file="RODBC/DESCRIPTION")
   system("$R_HOME/bin/R CMD build RODBC")
   tools::write_PACKAGES(".")
-  if(is.installed){
-    update.packages(contriburl = paste("file://",wd,sep=""))
-  }else{
-    if(tolower(substr(readline("Install patched RODBC? (y/N) "),1,1))=="y")
-      install.packages("RODBC",contriburl = paste("file://",wd,sep=""),type="source")	
-  }
+  update.packages(contriburl = paste("file://",wd,sep=""))
   unlink(wd,T,T)
   ##  tar(tarfile = x[1,2],compression = "gzip",
   ##      files = dir("RODBC",full.names = TRUE, recursive = T))
