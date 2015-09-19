@@ -150,7 +150,7 @@ patch.RODBC<-function(file,patch=readLines(file)){
   dcf[1,"Date"]<-Sys.Date()
   dcf[1,"Description"]<-paste(dcf[1,"Description"],dtext)
   write.dcf(dcf,file="RODBC/DESCRIPTION")
-  cmd<-paste(file.path(Sys.getenv("R_HOME"),"bin","R"),
+  cmd<-paste(shQuote(file.path(Sys.getenv("R_HOME"),"bin","R")),
              "CMD build RODBC --no-build-vignettes")
   system(cmd,wait = T,show.output.on.console = T)
   tools::write_PACKAGES(".",type="source")
