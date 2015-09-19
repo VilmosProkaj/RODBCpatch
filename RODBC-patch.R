@@ -151,3 +151,5 @@ patch.RODBC<-function(file,patch=readLines(file)){
   ##      files = dir("RODBC",full.names = TRUE, recursive = T))
   ##file.show(file.path(wd,"RODBC","src","RODBC.c"))
 }
+
+patch.RODBC(patch = patch)
