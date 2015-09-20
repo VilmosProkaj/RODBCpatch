@@ -116,9 +116,10 @@ apply.patch<-function(patch,n=1, basedir=getwd()){
         .out<-c(.out,hunk$new$text)
         offset<-offset+length(ind2)
       }else{
-        warning(sprintf("hunk:\n%s\ndoes not match and skipped!!",
-                        paste(paste("|",trimline(.lines[ind2]),"|",trimline(hunk$old$text),"|",sep=""),
-                              collapse="\n")))
+        if(interactive()) f<-warning else f<-stop
+        f(sprintf("hunk:\n%s\ndoes not match and skipped!!",
+                  paste(paste("|",trimline(.lines[ind2]),"|",trimline(hunk$old$text),"|",sep=""),
+                        collapse="\n")))
       }
     }
     .out<-c(.out,.lines)
@@ -155,11 +156,12 @@ patch.RODBC<-function(file,patch=readLines(file)){
   system(cmd,wait = T,show.output.on.console = T)
   tools::write_PACKAGES(".",type="source")
   if(is.installed){
-    update.packages(ask = TRUE,
+    update.packages(ask = interactive(),
                     contriburl = paste("file:",wd,sep=""),
                     type="source")
   }else{
-    if(tolower(substr(readline("Install patched RODBC? (y/N) "),1,1))=="y")
+    if((!interactive()) || 
+       (tolower(substr(readline("Install patched RODBC? [y/N] "),1,1))=="y"))
       install.packages("RODBC",
                        contriburl = paste("file:",wd,sep=""),
                        type="source")
